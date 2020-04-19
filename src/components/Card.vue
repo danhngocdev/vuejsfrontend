@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title">Trello Clone</h3>
+            <h3 class="panel-title">Trello Clone <i class="glyphicon-glyphicon-trash"></i></h3>
           </div>
           <div class="panel-body">
             <div class="col-md-4">
@@ -12,11 +12,19 @@
               <ul v-if="todos && todos.length" class="list-group">
                 <li v-for="todo in todos" :key="todo.id" class="list-group-item itemtodo">
                   {{todo.title}}
-                  <a
+                  
+                  <span class="">
+                    
+                   
+                   <a     
+                           
                     v-on:click="deleteTitle($event,todo.id)"
                     class="btn btn-danger buttondelete"
                     href
-                  >Delete</a>
+                  ><b-icon icon="x-circle" scale="2" variant="success"></b-icon></a>
+                    
+                  </span>
+                  
                 </li>
               </ul>
               <input type="text" class="form-control" v-model="titles" placeholder="Input Title" />
@@ -60,7 +68,8 @@
 
 <script>
 import axios from "axios";
-const baseURL = "http://localhost:8080/api";
+import { BIcon } from 'bootstrap-vue'
+const baseURL = "http://localhost:8888/api";
 //const post = "http://localhost:8080/api/todo/insert"
 export default {
   name: "card",
@@ -73,6 +82,9 @@ export default {
       titledoing: "",
       titledone: ""
     };
+  },
+  components:{
+    BIcon
   },
   async created() {
     try {
@@ -115,6 +127,7 @@ export default {
         );
         this.todos = [...this.todos, res.data];
         this.titles = "";
+        window.location.reload()
       } catch (error) {
         console.error(error);
       }
@@ -127,6 +140,7 @@ export default {
         });
         this.doings = [...this.doings, res.data];
         this.titledoing = "";
+
       } catch (error) {
         console.error(error);
       }
@@ -146,11 +160,17 @@ export default {
     async deleteTitle(e, id) {
       e.preventDefault();
       try {
-        return await axios.post(`${baseURL}/todo/delete/` + id, {
-          headers: {
-            "Access-Control-Allow-Origin": "*"
-          }
-        });
+        // return await axios.post(`${baseURL}/todo/delete/` + id, {
+        //   headers: {
+        //     "Access-Control-Allow-Origin": "*"
+        //   }
+        // });
+        axios.delete(`${baseURL}/todo/delete/`+id)
+       window.location.reload()
+        .then(function(res){
+           console.log(res.data);
+        })
+
       } catch (error) {
         console.error(error);
       }

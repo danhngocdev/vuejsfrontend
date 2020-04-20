@@ -8,8 +8,12 @@
                     <article class="card" v-for="todo in todos" :key="todo.id">
                         <header>
                            {{todo.title}}
+                            <button v-on:click="deleteTitle($event,todo.id)" class="btn btn-danger deletebutton">Delete</button>
                         </header>
+                       
                     </article>
+                    <!-- <input type="text" class="titleinput" placeholder="input title "> -->
+                   
                 </draggable>   
             </section>
         </div>
@@ -20,6 +24,7 @@
                     <article class="card" v-for="todo in doings " :key="todo.id"  >
                         <header>
                          {{todo.title}}
+                         <button v-on:click="deleteTitle($event,todo.id)" class="btn btn-danger deletebutton">Delete</button>
                         </header>
                     </article>
                 </draggable>  
@@ -32,6 +37,7 @@
                     <article class="card"  v-for="todo in dones " :key="todo.id"  >
                         <header>
                          {{todo.title}}
+                         <button v-on:click="deleteTitle($event,todo.id)" class="btn btn-danger deletebutton">Delete</button>
                         </header>
                     </article>
                 </draggable>  
@@ -46,9 +52,6 @@ import draggable from 'vuedraggable'
 import $ from 'jquery'
 import Vue from 'vue'
 import VueSwal from 'vue-swal'
-import Vuetify from "vuetify";
-Vue.use(Vuetify);
-Vue.config.productionTip = false;
 Vue.use(VueSwal)
 const baseURL = "http://localhost:8888/api";
 //const post = "http://localhost:8080/api/todo/insert"
@@ -229,12 +232,23 @@ export default {
       cursor: pointer;
       font-size: 16px;
       font-weight: bolder;
-      text-align: left -;
+      text-align: left;
     }
     .list .card:hover {
       background-color: #F0F0F0;
     }
     .drag-area{
      min-height: 10px;  
+    }
+    .titleinput{
+      margin-top: 20px;
+      width: 50%;
+      border:  none;
+      height: 30px;
+      padding: 20px;
+      background:rgb(201, 198, 189);
+    }
+    .deletebutton{
+      float: right;
     }
 </style>

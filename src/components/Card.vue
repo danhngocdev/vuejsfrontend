@@ -1,74 +1,55 @@
 <template>
-  <div class="conatiner">
-    <div class="row">
+  <div class="row">
       <div class="col-md-12">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">Trello Clone <i class="glyphicon-glyphicon-trash"></i></h3>
-          </div>
-          <div class="panel-body">
-            <div class="col-md-4">
-              <h3>Todo</h3>
-              <ul v-if="todos && todos.length" class="list-group">
-                <li v-for="todo in todos" :key="todo.id" class="list-group-item itemtodo">
-                  {{todo.title}}
-                  
-                  <span class="">
-                    
-                   
-                   <a     
-                           
-                    v-on:click="deleteTitle($event,todo.id)"
-                    class="btn btn-danger buttondelete"
-                    href
-                  ><b-icon icon="x-circle" scale="2" variant="success"></b-icon></a>
-                    
-                  </span>
-                  
-                </li>
-              </ul>
-              <input type="text" class="form-control" v-model="titles" placeholder="Input Title" />
-              <button v-on:click="createTodo($event)" type="submit" class="btn btn-primary">Add</button>
-            </div>
-            <div class="col-md-4">
-              <h3>Doings</h3>
-              <ul v-if="doings && doings.length" class="list-group">
-                <li
-                  v-for="todo in doings"
-                  :key="todo.id"
-                  class="list-group-item itemtodo"
-                >{{todo.title}}</li>
-              </ul>
-              <input
-                type="text"
-                class="form-control"
-                v-model="titledoing"
-                placeholder="Input Title"
-              />
-              <button v-on:click="createTododoing($event)" type="submit" class="btn btn-primary">Add</button>
-            </div>
-            <div class="col-md-4">
-              <h3>Done</h3>
-              <ul v-if="dones && dones.length" class="list-group">
-                <li
-                  v-for="todo in dones"
-                  :key="todo.id"
-                  class="list-group-item itemtodo"
-                >{{todo.title}}</li>
-              </ul>
-              <input type="text" class="form-control" v-model="titledone" placeholder="Input Title" />
-              <button v-on:click="createTododone($event)" type="submit" class="btn btn-primary">Add</button>
-            </div>
-          </div>
+           <div class="col-md-4 ">
+            <section class="list">
+                <header>TODO</header>
+                <draggable class="drag-area" v-if="todos.length" >
+                    <article class="card" v-for="todo in todos" :key="todo.id">
+                        <header>
+                           {{todo.title}}
+                        </header>
+                    </article>
+                </draggable>   
+            </section>
+        </div>
+        <div class="col-md-4">   
+            <section class="list">
+                <header>DOING</header>
+                <draggable class="drag-area" v-if="doings.length" >
+                    <article class="card" v-for="todo in doings " :key="todo.id"  >
+                        <header>
+                         {{todo.title}}
+                        </header>
+                    </article>
+                </draggable>  
+            </section>
+        </div>
+        <div class="col-md-4">   
+            <section class="list">
+                <header>DONE</header>
+                <draggable class="drag-area" v-if="dones.length" >
+                    <article class="card"  v-for="todo in dones " :key="todo.id"  >
+                        <header>
+                         {{todo.title}}
+                        </header>
+                    </article>
+                </draggable>  
+            </section>
         </div>
       </div>
     </div>
-  </div>
 </template>
-
 <script>
 import axios from "axios";
-import { BIcon } from 'bootstrap-vue'
+import draggable from 'vuedraggable'
+import $ from 'jquery'
+import Vue from 'vue'
+import VueSwal from 'vue-swal'
+import Vuetify from "vuetify";
+Vue.use(Vuetify);
+Vue.config.productionTip = false;
+Vue.use(VueSwal)
 const baseURL = "http://localhost:8888/api";
 //const post = "http://localhost:8080/api/todo/insert"
 export default {
@@ -84,7 +65,8 @@ export default {
     };
   },
   components:{
-    BIcon
+    draggable,
+   
   },
   async created() {
     try {
@@ -111,9 +93,19 @@ export default {
     }
   },
   methods: {
+    editModal(todo){
+     $('#todo').modal('show');
+     console.log(todo);
+     
+    },
     async createTodo() {
       try {
-        const res = await axios.post(
+        if(this.titles == ''){
+          alert("Input Title")
+        }
+        else
+        {
+           const res = await axios.post(
           `${baseURL}/todo/insert`,
           {
             title: this.titles,
@@ -128,31 +120,43 @@ export default {
         this.todos = [...this.todos, res.data];
         this.titles = "";
         window.location.reload()
+        }
+       
       } catch (error) {
         console.error(error);
       }
     },
     async createTododoing() {
       try {
+       if(this.titledoing == ''){
+         alert("Input Title");
+       }else{
         const res = await axios.post(`${baseURL}/todo/insert`, {
           title: this.titledoing,
           todo_type: "doing"
         });
         this.doings = [...this.doings, res.data];
         this.titledoing = "";
-
+         window.location.reload()
+       }
       } catch (error) {
         console.error(error);
       }
     },
     async createTododone() {
       try {
-        const res = await axios.post(`${baseURL}/todo/insert`, {
+        if(this.titledone == ''){
+          alert("input Title");
+        }else{
+              const res = await axios.post(`${baseURL}/todo/insert`, {
           title: this.titles,
           todo_type: "done"
         });
         this.dones = [...this.dones, res.data];
         this.titledone = "";
+         window.location.reload()
+        }
+       
       } catch (error) {
         console.error(error);
       }
@@ -160,17 +164,27 @@ export default {
     async deleteTitle(e, id) {
       e.preventDefault();
       try {
-        // return await axios.post(`${baseURL}/todo/delete/` + id, {
-        //   headers: {
-        //     "Access-Control-Allow-Origin": "*"
-        //   }
-        // });
-        axios.delete(`${baseURL}/todo/delete/`+id)
-       window.location.reload()
-        .then(function(res){
-           console.log(res.data);
-        })
-
+        this.$swal({
+        title: "Delete this record?",
+        text: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "Yes, Delete it!"
+    }).then((result) => {
+         axios.delete(`${baseURL}/todo/delete/`+id).then(()=>{
+              this.$swal({
+              title: "Deleted!",
+              text: "Your row has been deleted.",
+              type: "success",
+           });
+             window.location.reload()
+         }).catch(()=>{
+           this.$swal("Failed!","There was something wronge","warning");
+         })
+         console.log(result.data);
+         
+    });
       } catch (error) {
         console.error(error);
       }
@@ -188,4 +202,39 @@ export default {
   float: right;
   overflow: hidden;
 }
+.list {
+      background-color: #26004d;
+      border-radius: 3px;
+      margin: 5px 5px;
+      padding: 10px;
+      width: 100%;
+    }
+    .list>header {
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      font-size: 20px;
+      line-height: 28px;
+      cursor: grab;
+    }
+    .list article {
+      border-radius: 3px;
+      margin-top: 10px;
+    }
+
+    .list .card {
+      background-color: #FFF;
+      border-bottom: 1px solid #CCC;
+      padding: 15px 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bolder;
+      text-align: left -;
+    }
+    .list .card:hover {
+      background-color: #F0F0F0;
+    }
+    .drag-area{
+     min-height: 10px;  
+    }
 </style>

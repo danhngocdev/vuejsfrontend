@@ -1,3 +1,5 @@
+
+const path = require('path')
 module.exports = {
     // proxy all webpack dev-server requests starting with /api
     // to our Spring Boot backend (localhost:8088) using http-proxy-middleware
@@ -14,5 +16,12 @@ module.exports = {
     // Change build paths to make them Maven compatible
     // see https://cli.vuejs.org/config/
     outputDir: 'target/dist',
-    assetsDir: 'static'
+    assetsDir: 'static',
+    configureWebpack: {
+      externals: {
+        vue: 'Vue'
+      }
+    }
   };
+
+

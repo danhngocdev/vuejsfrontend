@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import axios from "axios"
+import VModal from 'vue-js-modal'
+Vue.use(VModal)
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
 axios.defaults.withCredentials = false;

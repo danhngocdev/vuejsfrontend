@@ -18,11 +18,13 @@
                                {{todo.title}}
                             </div>
                             <button v-on:click="deleteTitle($event,todo.id)" class="btn btn-danger deletebutton">Delete</button>
+                            <button class="btn btn-info detail" data-toggle="modal" data-target="#exampleModal" >...</button>
+                             
                         </header> 
                     </article>               
                 </draggable>   
                   <input type="text" class="titleinput" placeholder="input title" v-model="titles">
-                    <button 
+                    <button
                      v-on:click="createTodo($event)"
                      class="btn btn-success buttonadd " >Add</button>
             </section>
@@ -44,6 +46,7 @@
                                {{todo.title}}
                             </div>
                             <button v-on:click="deleteTitle($event,todo.id)" class="btn btn-danger deletebutton">Delete</button>
+                             <button class="btn btn-info detail" data-toggle="modal" data-target="#exampleModal" >...</button>
                         </header> 
                     </article>
                 </draggable>  
@@ -70,6 +73,7 @@
                                {{todo.title}}
                             </div>
                             <button v-on:click="deleteTitle($event,todo.id)" class="btn btn-danger deletebutton">Delete</button>
+                             <button class="btn btn-info detail" data-toggle="modal" data-target="#exampleModal" >...</button>
                         </header> 
                     </article>
                 </draggable> 
@@ -79,12 +83,32 @@
                      class="btn btn-success buttonadd">Add</button> 
             </section>
         </div>
+            <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          hihi
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
       </div>
     </div>
 </template>
 <script>
 Vue.use(Vuetify)
-import axios from "axios";
+import axios from "axios"
+import * as $AB from 'jquery';
 import draggable from 'vuedraggable'
 import Vue from 'vue'
 import VueSwal from 'vue-swal'
@@ -97,17 +121,16 @@ export default {
     return {
       tagEditingId :'',
       todos: [],
+      erros:[],
       doings: [],
       dones: [],
       titles: "",
       titledoing: "",
-      titledone: ""
+      titledone: "",
     };
   },
   components:{
     draggable,
-    
-   
   },
 
   async created() {
@@ -135,7 +158,10 @@ export default {
     }
   },
   methods: {
-      setToEditing(todo){
+  showModal(){
+     $AB('#exampleModal').modal('show');
+    },
+  setToEditing(todo){
     this.tagEditingId = todo.id;
     setTimeout(() =>{
      document.getElementById(`todo-edit-${todo.id}`).focus();
@@ -146,7 +172,7 @@ export default {
       axios.put(`${baseURL}/todo/update`,todo)
      this.tagEditingId = ''
   },
-    onAddTodo(event) {
+  onAddTodo(event) {
                 let id = event.item.getAttribute('data-id');
                axios.patch(`${baseURL}/todo/`+ id, {
                 }).then((response) => {
@@ -168,12 +194,12 @@ export default {
                     console.log(error);
                 })
             },
-       onAddDone(event) {
+    onAddDone(event) {
                 let idx = event.item.getAttribute('data-id');
                axios.patch(`${baseURL}/todo/`+ idx, {
                 },    
                 ).then((response) => {
-                    response.data.todo_type = "done";
+                     response.data.todo_type = "done";
                      axios.put(`${baseURL}/todo/update`, {...response.data})
                 }).catch((error) => {
                     console.log(error);
@@ -181,7 +207,7 @@ export default {
             },         
     async createTodo() {
       try {
-        if(this.titles == ''){
+        if(this.titledoing == ''){
           alert("Input Title")
         }
         else
@@ -333,5 +359,8 @@ export default {
     .buttonadd{
       margin-left: 20px;
       padding: 10px;
+    }
+    .detail{
+      float: right;
     }
 </style>

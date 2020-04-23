@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row">  
       <div class="col-md-12">
         <div class="col-md-4 ">
             <section class="list">
@@ -84,31 +84,68 @@
             </section>
         </div>
             <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title" id="exampleModalLabel"><icon name="credit-card"></icon>Title</h5>
+          <button type="button" class="close closemodal" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        
         <div class="modal-body">
-          hihi
+           <div class="col-md-12"> 
+               <div class="col-md-9">
+                    <h3 class="title-des">Mô Tả</h3>
+                    <div class="form-group green-border-focus">
+                      <textarea  class="form-control text-decs" id="exampleFormControlTextarea5" placeholder="Thêm mô tả chi tiết hơn..." rows="3"></textarea>
+                      <button id="addbutton" hidden>Add Show</button>
+                    </div>
+                     <h3 class="title-desc">Hoạt động</h3>
+                     <a class="hide-detail">Ẩn chi tiết</a>
+                     <input type="text" class="form-control comment" placeholder="Viết bình luận..." id="usr">
+                     
+               </div>
+                <div class="col-md-3">
+                   <h3 class="title-ok">Thêm Vào Thẻ</h3>
+                    <div class="list-right">
+                      <a class="button-link js-change-card-members"><span><icon name="person"></icon></span>Thành Viên</a>
+                      <a class="button-link js-change-card-members">Nhãn</a>
+                      <a class="button-link js-change-card-members">Việc Cần Làm</a>
+                      <a class="button-link js-change-card-members">Ngày hết  hạn</a>
+                      <a class="button-link js-change-card-members">Đính kèm</a>
+                      <a class="button-link js-change-card-members">Ảnh bìa</a>
+                    </div>
+                     <h3 class="title-ok">Tính Năng Mở Rộng</h3>
+                       <div class="list-right">
+                      <a class="button-link js-change-card-members">Nhận Power-Ups</a>
+                    </div>
+                    <h3 class="title-ok">Thao Tác</h3>
+                       <div class="list-right">
+                      <a class="button-link js-change-card-members">Di chuyển</a>
+                      <a class="button-link js-change-card-members">Sao chép</a>
+                      <a class="button-link js-change-card-members">Tạo mẫu</a>
+                      <a class="button-link js-change-card-members">Theo dõi</a>
+                      <a class="button-link js-change-card-members">Lưu trữ</a>
+                      <a class="button-link js-change-card-members">Chia sẻ</a>
+                    </div>
+               </div>
+           </div>
         </div>
-        <div class="modal-footer">
+        <!-- <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
+
       </div>
     </div>
 </template>
 <script>
 Vue.use(Vuetify)
 import axios from "axios"
-import * as $AB from 'jquery';
 import draggable from 'vuedraggable'
 import Vue from 'vue'
 import VueSwal from 'vue-swal'
@@ -158,9 +195,6 @@ export default {
     }
   },
   methods: {
-  showModal(){
-     $AB('#exampleModal').modal('show');
-    },
   setToEditing(todo){
     this.tagEditingId = todo.id;
     setTimeout(() =>{
@@ -206,29 +240,18 @@ export default {
                 })
             },         
     async createTodo() {
-      try {
-        if(this.titledoing == ''){
-          alert("Input Title")
-        }
-        else
-        {
-           const res = await axios.post(
-          `${baseURL}/todo/insert`,
-          {
-            title: this.titles,
-            todo_type: "todo"
-          },
-          {
-            headers: {
-              "Access-Control-Allow-Origin": "*"
-            }
-          }
-        );
+   try {
+       if(this.titles == ''){
+         alert("Input Title");
+       }else{
+        const res = await axios.post(`${baseURL}/todo/insert`, {
+          title: this.titles,
+          todo_type: "todo"
+        });
         this.todos = [...this.todos, res.data];
         this.titles = "";
-        window.location.reload()
-        }
-       
+         window.location.reload()
+       }
       } catch (error) {
         console.error(error);
       }
@@ -299,68 +322,6 @@ export default {
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+    
 <style>
-.itemtodo {
-  text-align: left;
-}
-.buttondelete {
-  float: right;
-  overflow: hidden;
-}
-.list {
-      background-color: #26004d;
-      border-radius: 3px;
-      margin: 5px 5px;
-      padding: 10px;
-      width: 100%;
-    }
-    .list>header {
-      font-weight: bold;
-      color: white;
-      text-align: center;
-      font-size: 20px;
-      line-height: 28px;
-      cursor: grab;
-    }
-    .list article {
-      border-radius: 3px;
-      margin-top: 10px;
-    }
-
-    .list .card {
-      background-color: #FFF;
-      border-bottom: 1px solid #CCC;
-      padding: 15px 10px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bolder;
-      text-align: left;
-       height: 75px;
-    }
-    .list .card:hover {
-      background-color: #F0F0F0;
-    }
-    .drag-area{
-     min-height: 10px;  
-    }
-    .titleinput{
-      margin-top: 20px;
-      width: 50%;
-      border:  none;
-      height: 30px;
-      padding: 20px;
-      background:rgb(201, 198, 189);
-    }
-    .deletebutton{
-      float: right;
-    }
-    .buttonadd{
-      margin-left: 20px;
-      padding: 10px;
-    }
-    .detail{
-      float: right;
-    }
 </style>
